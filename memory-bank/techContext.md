@@ -52,6 +52,9 @@ uv run ruff check --fix          # lint + autofix
 | `tests/test_retrieval.py` | Retrieval unit tests |
 | `pyproject.toml` | Project config (deps, ruff, pytest) |
 | `prek.toml` | Pre-commit hooks (format, lint, test) |
+| `rag/data.py` | Drug knowledge graph + indexes (Phase 1) |
+| `eval_pipeline.py` | Batch eval against 10 gold queries |
+| `tests/test_data.py` | 14 tests for data structures |
 | `ROADMAP.md` | Our strategy and implementation plan |
 
 ## AI Tooling

@@ -30,19 +30,24 @@ Answer + Source Documents
 ## Project Structure
 ```
 .
-├── run_pipeline.py              # Main pipeline script
-���── drug_docs.csv                # Dataset (100 docs, 50 drugs)
-├── example_working_pipeline.ipynb  # Starter notebook
-├── tests/
-│   ├── __init__.py
-│   └── test_retrieval.py        # Retrieval unit tests
-├── pyproject.toml               # uv project config + ruff + pytest
-├── prek.toml                    # Pre-commit hooks
-├── uv.lock                      # Dependency lock
-├── CLAUDE.md                    # AI agent instructions
-├── ROADMAP.md                   # Hackathon strategy
-├── .jcodemunch.jsonc            # Code indexing config
-└── memory-bank/                 # Persistent AI context
+rag/
+    __init__.py
+    data.py                  # Drug knowledge graph + indexes (Phase 1)
+tests/
+    __init__.py
+    test_retrieval.py        # Retrieval unit tests
+    test_data.py             # Data/index tests (14 tests)
+run_pipeline.py              # Interactive pipeline script
+eval_pipeline.py             # Batch evaluation (10 gold queries)
+drug_docs.csv                # Dataset (100 docs, 50 drugs)
+example_working_pipeline.ipynb  # Starter notebook
+pyproject.toml               # uv project config + ruff + pytest
+prek.toml                    # Pre-commit hooks
+uv.lock                      # Dependency lock
+CLAUDE.md                    # AI agent instructions
+ROADMAP.md                   # Hackathon strategy
+.jcodemunch.jsonc            # Code indexing config
+memory-bank/                 # Persistent AI context
 ```
 
 ## Key Design Decisions
@@ -64,9 +69,9 @@ No ML needed -- regex + keyword matching is sufficient for this domain.
 If no document scores above threshold (0.15), the system refuses to answer
 rather than hallucinating. Critical for evaluation criteria.
 
-## Data Structures
+## Data Structures (Implemented in rag/data.py)
 
-### drug_index (built at startup)
+### drug_index (built by build_drug_index)
 ```python
 {
     "Drug A": {
@@ -74,16 +79,26 @@ rather than hallucinating. Critical for evaluation criteria.
         "side_effect_docs": [1],
         "all_docs": [0, 1],
         "conditions": ["hypertension"],
-        "side_effects": ["dizziness", "headache", "fatigue"]
+        "side_effects": ["dizziness", "headache", "fatigue"],
+        "usage_text": "Drug A is commonly used to...",
+        "side_effect_text": "Drug A may cause..."
     }
 }
 ```
 
-### condition_index (reverse lookup)
+### condition_index (built by build_condition_index)
 ```python
 {
     "hypertension": ["Drug A", "Drug V"],
     "diabetes": ["Drug B"],
     "asthma": ["Drug F"]
+}
+```
+
+### side_effect_index (built by build_side_effect_index)
+```python
+{
+    "dizziness": ["Drug A", "Drug H", "Drug V", ...],
+    "dependency risks": ["Drug D", "Drug J"]
 }
 ```
