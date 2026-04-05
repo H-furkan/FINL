@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Phase
-**Phase 4** -- LLM integration + few-shot prompts. Phases 1-3 complete.
+**Phase 5** -- Gradio UI. Phases 1-4 complete.
 
 ## What's Been Done
 - [x] Analyzed dataset structure (50 drugs x 2 docs)
@@ -15,30 +15,40 @@
 - [x] Created tests/test_retrieval.py (retrieval unit tests)
 - [x] **Phase 1 COMPLETE** (by teammate):
   - rag/data.py: load_data, build_drug_index, build_condition_index, build_side_effect_index
-  - Drug name extraction (regex), doc type classification, condition mapping, side effect extraction
-  - All 50 drugs parsed with usage + side_effect docs, conditions, and side effects
-  - tests/test_data.py: 14 tests covering all data structures
-  - eval_pipeline.py: upgraded to HybridRetriever, 7/7 pass, 95% score
+  - All 50 drugs parsed, tests/test_data.py: 19 tests
 - [x] **Phase 1 extras** (by teammate):
   - drug_knowledge.csv: structured CSV export of all 50 drugs
   - visualize_kg.py: knowledge graph visualization (networkx + matplotlib)
-  - kg_full.png: rendered full KG image (great for presentation slide 1!)
-  - rag/data.py: added export_knowledge_csv(), load_knowledge_csv()
+  - kg_full.png: rendered full KG image (for presentation)
+  - eval_questions.md: 50 evaluation questions across 8 categories
+- [x] **Phase 2 COMPLETE**: Hybrid 3-layer retrieval engine
+  - rag/retrieval.py: HybridRetriever (drug match + TF-IDF + keyword, sibling linking)
+  - drug_knowledge.csv integrated: enriched context + structured fallback
+  - tests/test_retrieval_hybrid.py: 24 tests (including knowledge CSV integration)
+- [x] **Phase 3 COMPLETE**: Query classifier
+  - classify_query: drug_specific, condition_lookup, comparison, multi_hop, safety, general
+  - Unanswerable detection (threshold = 0.10)
+- [x] **Phase 4 COMPLETE**: LLM generation + prompts
+  - rag/generation.py: RAGPipeline class (answer, fallback, source formatting)
+  - Few-shot prompts (3 gold examples), dynamic templates per query type
+  - Enriched context from drug_knowledge.csv sent to LLM
+  - Structured fallback when LLM unavailable (74% without LLM)
+  - tests/test_generation.py: 8 tests
+  - eval_pipeline.py upgraded: 50 questions, tqdm progress, category scoring
+  - 54 total tests, all passing
 
 ## What's Next
-- [x] Phase 2: Hybrid 3-layer retrieval engine (rag/retrieval.py - HybridRetriever)
-- [x] Phase 3: Query classifier (rag/retrieval.py - classify_query)
-- [ ] Phase 4: LLM integration with few-shot prompts
-- [ ] Phase 5: Gradio UI + automated evaluation
+- [ ] Phase 5: Gradio UI
 - [ ] Phase 6: Presentation prep
 
-## Key Decisions Pending
-- Final model choice: qwen vs mistral (test both during Phase 4)
-- Similarity threshold for unanswerable detection (start with 0.15, tune)
+## Key Decisions Made
+- Model: qwen/qwen3.6-plus:free on OpenRouter
+- Unanswerable threshold: 0.10
+- Few-shot split: 3 in prompt, 7+ held out for eval
+- drug_knowledge.csv used for enriched LLM context AND structured fallback
 
 ## Important Notes
-- API keys must NOT be hardcoded -- use environment variables
-- Each team member should use their own OpenRouter API key
-- Run `uv sync` to install dependencies before starting
-- eval_pipeline.py upgraded -- uses HybridRetriever + few-shot prompts, 7/7 pass
+- API keys via OPENROUTER_API_KEY env var (fallback hardcoded key exists in eval_pipeline.py)
+- Run eval: `python3 eval_pipeline.py`
+- Run tests: `python3 -m pytest tests/ -v`
 - kg_full.png available for presentation architecture slide
