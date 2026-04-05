@@ -113,11 +113,12 @@ Format:
 
 def generate_answer(query: str, retrieved_docs, query_type: str) -> str:
     """Generate an answer using the LLM with query-type-aware prompts."""
-    context = "\n".join(retrieved_docs["text"].tolist())
-
     # Unanswerable detection
     if not retrieved_docs.attrs.get("is_answerable", True):
         return "I don't know based on the provided data."
+
+    # Use enriched context (raw docs + structured drug_knowledge.csv data)
+    context = retriever.build_enriched_context(retrieved_docs)
 
     template = PROMPT_TEMPLATES.get(query_type, PROMPT_TEMPLATES["drug_specific"])
     prompt = template.format(
@@ -134,8 +135,9 @@ def generate_answer(query: str, retrieved_docs, query_type: str) -> str:
         )
         return response.choices[0].message.content
     except Exception as e:
-        # Fallback: build answer from retrieved docs
-        return f"[LLM ERROR: {e}]\nFallback:\n{context}"
+        # Fallback: structured answer from drug_knowledge.csv
+        fallback = retriever.build_fallback_answer(retrieved_docs)
+        return f"[LLM unavailable] {fallback}"
 
 
 # ---------------------------------------------------------------------------

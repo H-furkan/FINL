@@ -9,11 +9,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from rag.data import (
+    KG_CSV_PATH,
     _DRUG_NAME_RE,
     build_condition_index,
     build_drug_index,
     build_side_effect_index,
     load_data,
+    load_knowledge_csv,
 )
 
 # ---------------------------------------------------------------------------
@@ -82,6 +84,16 @@ class HybridRetriever:
         self.drug_index = build_drug_index(df)
         self.condition_index = build_condition_index(self.drug_index)
         self.side_effect_index = build_side_effect_index(self.drug_index)
+
+        # Structured knowledge from drug_knowledge.csv
+        if KG_CSV_PATH.exists():
+            self.knowledge_df = load_knowledge_csv()
+            self._kg_lookup = {
+                row["drug_name"]: row for _, row in self.knowledge_df.iterrows()
+            }
+        else:
+            self.knowledge_df = None
+            self._kg_lookup = {}
 
         # TF-IDF layer
         self.vectorizer = TfidfVectorizer(stop_words="english")
@@ -197,6 +209,80 @@ class HybridRetriever:
         results.attrs["max_score"] = max_score
 
         return results
+
+    # -- Structured knowledge enrichment -----------------------------------
+
+    def get_drug_summary(self, drug_name: str) -> str | None:
+        """Get a structured summary for a drug from drug_knowledge.csv."""
+        if drug_name not in self._kg_lookup:
+            return None
+        row = self._kg_lookup[drug_name]
+        parts = [f"{drug_name}:"]
+        if row["conditions"]:
+            parts.append(f"  Treats: {row['conditions']}")
+        if row["side_effects"]:
+            parts.append(f"  Side effects: {row['side_effects']}")
+        return "\n".join(parts)
+
+    def get_matched_drugs(self, results: pd.DataFrame) -> list[str]:
+        """Extract unique drug names from retrieval results."""
+        drugs = []
+        for _, row in results.iterrows():
+            match = _DRUG_NAME_RE.search(row["text"])
+            if match:
+                name = f"Drug {match.group(1)}"
+                if name not in drugs:
+                    drugs.append(name)
+        return drugs
+
+    def build_enriched_context(self, results: pd.DataFrame) -> str:
+        """Build context that combines raw docs + structured knowledge summaries.
+
+        Returns a string with raw retrieved docs followed by structured summaries
+        from drug_knowledge.csv for each matched drug.
+        """
+        # Raw documents
+        raw_docs = "\n".join(
+            f"[Doc {i + 1}] {row['text']}" for i, (_, row) in enumerate(results.iterrows())
+        )
+
+        # Structured summaries from drug_knowledge.csv
+        drugs = self.get_matched_drugs(results)
+        summaries = []
+        for drug in drugs:
+            s = self.get_drug_summary(drug)
+            if s:
+                summaries.append(s)
+
+        if summaries:
+            structured = "\n".join(summaries)
+            return f"Retrieved Documents:\n{raw_docs}\n\nStructured Drug Data:\n{structured}"
+
+        return raw_docs
+
+    def build_fallback_answer(self, results: pd.DataFrame) -> str:
+        """Build a clean answer from structured data when LLM is unavailable."""
+        drugs = self.get_matched_drugs(results)
+        if not drugs:
+            return "No relevant information found in the database."
+
+        parts = []
+        for drug in drugs:
+            if drug in self._kg_lookup:
+                row = self._kg_lookup[drug]
+                lines = [f"**{drug}**"]
+                if row["conditions"]:
+                    lines.append(f"- Used for: {row['conditions']}")
+                if row["side_effects"]:
+                    lines.append(f"- Side effects: {row['side_effects']}")
+                parts.append("\n".join(lines))
+            else:
+                # Fall back to raw drug_index
+                info = self.drug_index.get(drug)
+                if info:
+                    parts.append(f"**{drug}**\n- {info['usage_text']}")
+
+        return "\n\n".join(parts) if parts else "No relevant information found."
 
     def _empty_result(self) -> pd.DataFrame:
         result = pd.DataFrame(columns=["doc_id", "text", "score"])

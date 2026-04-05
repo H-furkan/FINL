@@ -103,3 +103,40 @@ class TestHybridRetriever:
         texts = " ".join(results["text"].tolist())
         assert "Drug G" in texts
         assert "muscle pain" in texts.lower() or "liver" in texts.lower()
+
+
+class TestKnowledgeCSVIntegration:
+    def setup_method(self):
+        self.retriever = HybridRetriever()
+
+    def test_drug_summary(self):
+        summary = self.retriever.get_drug_summary("Drug A")
+        assert summary is not None
+        assert "hypertension" in summary.lower()
+        assert "dizziness" in summary.lower()
+
+    def test_drug_summary_missing(self):
+        assert self.retriever.get_drug_summary("Drug ZZZ") is None
+
+    def test_get_matched_drugs(self):
+        results = self.retriever.retrieve("What treats diabetes?")
+        drugs = self.retriever.get_matched_drugs(results)
+        assert "Drug B" in drugs
+
+    def test_enriched_context_has_both_sections(self):
+        results = self.retriever.retrieve("What are the side effects of Drug A?")
+        context = self.retriever.build_enriched_context(results)
+        assert "Retrieved Documents:" in context
+        assert "Structured Drug Data:" in context
+        assert "Drug A" in context
+
+    def test_fallback_answer_structured(self):
+        results = self.retriever.retrieve("What treats asthma?")
+        fallback = self.retriever.build_fallback_answer(results)
+        assert "Drug F" in fallback
+        assert "asthma" in fallback.lower()
+
+    def test_fallback_empty_results(self):
+        empty = self.retriever._empty_result()
+        fallback = self.retriever.build_fallback_answer(empty)
+        assert "No relevant" in fallback
