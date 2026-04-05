@@ -57,13 +57,20 @@
   - [x] Eval upgraded to 50 questions with tqdm + category scoring
   - [x] Tests: tests/test_generation.py (8 tests)
   - [x] With LLM: 7/7 pass on held-out queries (95%)
+  - [x] Full 50-question eval: 90% overall (47/50 passed)
+    - 100%: direct_fact, usage, reverse_lookup, complex, unanswerable, multi_hop
+    - 61%: comparison | 71%: safety
 
-### Phase 5: UI & Evaluation
-- Status: NOT STARTED
+### Phase 5: UI (Gradio)
+- Status: COMPLETE
+- Implemented in: `app.py`
 - Tasks:
-  - [ ] Gradio interface
-  - [ ] Live demo with example buttons
-  - [ ] Source document display
+  - [x] Gradio interface with Blocks layout + Soft theme
+  - [x] Model selector dropdown: No LLM, qwen, mistral, llama-3.1 (all free)
+  - [x] 10 example buttons covering all query types
+  - [x] Answer + Source Documents + Query Info panels
+  - [x] Pipeline caching per model (shared retriever, no rebuild)
+  - [x] Auto-generates sharable public link (share=True)
 
 ### Phase 6: Presentation
 - Status: NOT STARTED
@@ -83,3 +90,6 @@
 - drug_knowledge.csv gives cleaner LLM answers via enriched context
 - Fallback mode (no LLM) achieves 74% -- strong demo point
 - Q8 "drugs affect brain" misses Drug D because text says "central nervous system" not "brain"
+- Comparison/safety categories weakest (61%/71%) -- broad multi-drug queries need wider retrieval
+- Score fusion can exceed 1.0 when multiple layers agree (feature, not bug)
+- 50-question eval takes ~16 min on free tier (~20s per LLM call)

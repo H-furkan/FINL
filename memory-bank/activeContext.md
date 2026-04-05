@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Phase
-**Phase 5** -- Gradio UI. Phases 1-4 complete.
+**Phase 6** -- Presentation prep. Phases 1-5 complete.
 
 ## What's Been Done
 - [x] Analyzed dataset structure (50 drugs x 2 docs)
@@ -37,18 +37,30 @@
   - eval_pipeline.py upgraded: 50 questions, tqdm progress, category scoring
   - 54 total tests, all passing
 
+- [x] **Phase 5 COMPLETE**: Gradio UI
+  - app.py: full Gradio interface with model selector dropdown
+  - 4 modes: No LLM (retrieval only), qwen, mistral, llama-3.1
+  - 10 example buttons, answer + sources + query info panels
+  - Pipelines cached per model (no retriever rebuild on switch)
+  - Run: `python3 app.py` (auto-generates sharable link)
+
+## 50-Question Eval Results (full pipeline with LLM)
+- Overall: **90% (47/50 passed)**
+- Direct Fact: 100% | Usage: 100% | Reverse Lookup: 100%
+- Complex: 100% | Unanswerable: 100% | Multi-Hop: 100%
+- Comparison: 61% | Safety: 71%
+
 ## What's Next
-- [ ] Phase 5: Gradio UI
 - [ ] Phase 6: Presentation prep
 
 ## Key Decisions Made
-- Model: qwen/qwen3.6-plus:free on OpenRouter
+- Model: qwen/qwen3.6-plus:free on OpenRouter (default), 3 models available
 - Unanswerable threshold: 0.10
-- Few-shot split: 3 in prompt, 7+ held out for eval
+- Few-shot split: 3 in prompt, 50 questions for eval
 - drug_knowledge.csv used for enriched LLM context AND structured fallback
 
 ## Important Notes
-- API keys via OPENROUTER_API_KEY env var (fallback hardcoded key exists in eval_pipeline.py)
+- Run app: `python3 app.py`
 - Run eval: `python3 eval_pipeline.py`
 - Run tests: `python3 -m pytest tests/ -v`
 - kg_full.png available for presentation architecture slide
