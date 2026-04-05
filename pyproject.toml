@@ -5,6 +5,8 @@ description = "Mini Datathon: Drug Knowledge Assistant (RAG Challenge)"
 requires-python = ">=3.10"
 dependencies = [
     "ipykernel>=7.2.0",
+    "matplotlib>=3.10.8",
+    "networkx>=3.4.2",
     "openai>=2.30.0",
     "pandas>=2.3.3",
     "scikit-learn>=1.7.2",
