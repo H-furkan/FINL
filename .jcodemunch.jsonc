@@ -1,0 +1,30 @@
+{
+  // jCodeMunch MCP configuration for Drug Knowledge Assistant
+  // Indexes this codebase for token-efficient AI code retrieval
+
+  "project_root": ".",
+
+  // Include Python files and notebooks for indexing
+  "include": [
+    "**/*.py",
+    "**/*.ipynb",
+    "**/*.csv",
+    "**/*.md"
+  ],
+
+  // Exclude generated/vendored files
+  "exclude": [
+    "memory-bank/**",
+    "__pycache__/**",
+    ".git/**",
+    ".venv/**",
+    ".pytest_cache/**",
+    ".ruff_cache/**"
+  ],
+
+  // Symbol extraction settings
+  "index": {
+    "follow_imports": true,
+    "extract_docstrings": true
+  }
+}
