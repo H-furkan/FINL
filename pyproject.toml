@@ -1,0 +1,41 @@
+[project]
+name = "metu-data-days"
+version = "0.1.0"
+description = "Mini Datathon: Drug Knowledge Assistant (RAG Challenge)"
+requires-python = ">=3.10"
+dependencies = [
+    "ipykernel>=7.2.0",
+    "openai>=2.30.0",
+    "pandas>=2.3.3",
+    "scikit-learn>=1.7.2",
+]
+
+[dependency-groups]
+dev = [
+    "prek>=0.3.8",
+    "pytest>=9.0.2",
+    "ruff>=0.15.9",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+extend-exclude = ["*.csv", "*.md"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort (import sorting)
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
