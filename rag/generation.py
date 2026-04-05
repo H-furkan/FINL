@@ -32,7 +32,10 @@ Q: Which drugs are used for infections?
 A:
 - Drug C: bacterial infections (pneumonia, bronchitis)
 - Drug AQ: respiratory infections
-- Drug AH: eye infections"""
+- Drug AH: eye infections
+
+Q: Which drug is used for asthma and what are its side effects?
+A: Drug F is used for asthma. Side effects include tremors, nervousness, and increased heart rate."""
 
 # ---------------------------------------------------------------------------
 # Prompt templates per query type
@@ -51,7 +54,7 @@ Documents:
 
 Question: {query}
 
-Answer in structured format with bullet points.""",
+Answer clearly in natural language like the examples (short sentences; simple bullets only when listing several items).""",
     "condition_lookup": """You are a medical knowledge assistant. Answer using ONLY the provided documents.
 Name the drug(s) and briefly explain how they work.
 If the answer is not in the documents, say "I don't know based on the provided data."
@@ -80,8 +83,10 @@ Question: {query}
 Format:
 - Drug X: [brief explanation]""",
     "multi_hop": """You are a medical knowledge assistant. Answer using ONLY the provided documents.
-The question asks about both usage AND side effects -- address both parts.
+The question asks about both what the drug treats and its side effects (or risks). Address both parts in plain language.
 If the answer is not in the documents, say "I don't know based on the provided data."
+
+Style: match the examples — conversational sentences, not a form. Do not use bold headings, and do not use label lines like "Used for:" and "Side effects:" as separate fields under the drug name.
 
 {few_shot}
 
@@ -92,7 +97,7 @@ Documents:
 
 Question: {query}
 
-Answer in structured format with bullet points.""",
+Answer:""",
     "safety": """You are a medical knowledge assistant. Based on the documents below, identify ALL
 drugs relevant to the safety concern in the question.
 If the answer is not in the documents, say "I don't know based on the provided data."
