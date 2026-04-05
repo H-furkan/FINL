@@ -30,6 +30,12 @@ class TestClassifyQuery:
     def test_general(self):
         assert classify_query("Tell me about Drug Z") == "drug_specific"
 
+    def test_lowercase_drug(self):
+        assert classify_query("tell me about drug b") == "drug_specific"
+
+    def test_mixed_case_drug(self):
+        assert classify_query("What are the side effects of drug A?") == "drug_specific"
+
 
 class TestHybridRetriever:
     def setup_method(self):
@@ -95,6 +101,17 @@ class TestHybridRetriever:
     def test_query_type_attached(self):
         results = self.retriever.retrieve("What treats diabetes?")
         assert results.attrs["query_type"] == "condition_lookup"
+
+    def test_lowercase_drug_b(self):
+        results = self.retriever.retrieve("what are the side effects of drug b?")
+        texts = " ".join(results["text"].tolist())
+        assert "Drug B" in texts
+        assert "nausea" in texts.lower()
+
+    def test_mixed_case_drug_f(self):
+        results = self.retriever.retrieve("drug F side effects")
+        texts = " ".join(results["text"].tolist())
+        assert "Drug F" in texts
 
     def test_cholesterol_multi_hop(self):
         results = self.retriever.retrieve(

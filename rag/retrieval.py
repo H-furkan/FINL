@@ -35,7 +35,7 @@ QUERY_TYPES = (
 def classify_query(query: str) -> str:
     """Classify a query into a type to route retrieval strategy."""
     q = query.lower()
-    drug_mentioned = bool(_DRUG_NAME_RE.search(query))
+    drug_mentioned = bool(re.search(r"\bdrug [a-z]{1,2}\b", q))
     asks_side_effects = any(
         w in q for w in ["side effect", "risk", "cause", "danger", "dependency"]
     )
@@ -101,12 +101,14 @@ class HybridRetriever:
 
     # -- Layer 1: exact drug name match ----------------------------------
 
+    _DRUG_NAME_CI = re.compile(r"\bdrug ([a-z]{1,2})\b", re.IGNORECASE)
+
     def _layer_drug_match(self, query: str) -> dict[int, float]:
         """Extract drug names from query and score their docs at 1.0."""
         scores: dict[int, float] = {}
-        matches = _DRUG_NAME_RE.findall(query)
+        matches = self._DRUG_NAME_CI.findall(query)
         for letter in matches:
-            drug_name = f"Drug {letter}"
+            drug_name = f"Drug {letter.upper()}"
             if drug_name in self.drug_index:
                 for doc_id in self.drug_index[drug_name]["all_docs"]:
                     scores[doc_id] = scores.get(doc_id, 0) + 1.0
