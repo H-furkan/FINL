@@ -343,6 +343,49 @@
             color: var(--accent);
         }
 
+        /* --- KNOWLEDGE GRAPH --- */
+        .kg-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .kg-tab {
+            padding: 0.6rem 1.4rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .kg-tab:hover { border-color: var(--accent); color: var(--text); }
+        .kg-tab.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+        }
+        .kg-view {
+            display: none;
+            text-align: center;
+        }
+        .kg-view.active { display: block; }
+        .kg-view img {
+            max-width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        .kg-caption {
+            margin-top: 1rem;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         /* --- EVAL RESULTS --- */
         .eval-table {
             width: 100%;
@@ -428,6 +471,7 @@
     <div class="links">
         <a href="#architecture">Architecture</a>
         <a href="#how">How It Works</a>
+        <a href="#graph">Knowledge Graph</a>
         <a href="#results">Results</a>
         <a href="https://a77b3da2eb7184fae6.gradio.live" target="_blank">Live Demo</a>
         <a href="https://github.com/H-furkan/FINL" target="_blank">GitHub</a>
@@ -594,6 +638,33 @@
     </div>
 </section>
 
+<!-- KNOWLEDGE GRAPH -->
+<section id="graph">
+    <h2 class="section-title">Knowledge <span>Graph</span></h2>
+    <p class="section-subtitle">The dataset is parsed into a structured graph of 50 drugs, 41 conditions, and 68 side effects. These are the indexes that power the retrieval engine.</p>
+
+    <div class="kg-tabs">
+        <div class="kg-tab active" onclick="switchKG('overview')">Full Graph (50 Drugs)</div>
+        <div class="kg-tab" onclick="switchKG('focus')">Single Drug Focus</div>
+        <div class="kg-tab" onclick="switchKG('cluster')">Condition Cluster</div>
+    </div>
+
+    <div class="kg-view active" id="kg-overview">
+        <img src="kg_overview.png" alt="Full Drug Knowledge Graph">
+        <p class="kg-caption">All 50 drugs (blue), 41 medical conditions (purple), and 68 side effects (yellow) connected by "treats" and "causes" relationships. This is the graph that our 3-layer retrieval engine queries at runtime.</p>
+    </div>
+
+    <div class="kg-view" id="kg-focus">
+        <img src="kg_focus.png" alt="Drug F Focus View">
+        <p class="kg-caption">Drug F treats asthma (purple) and causes tremors, nervousness, and increased heart rate (yellow). The sibling linker ensures both the usage doc and side-effect doc are always retrieved together -- this is why multi-hop queries work.</p>
+    </div>
+
+    <div class="kg-view" id="kg-cluster">
+        <img src="kg_cluster.png" alt="Infection Drugs Cluster">
+        <p class="kg-caption">All drugs that treat infections, clustered around the shared condition node. This is what the retrieval engine sees when you ask "Which drugs are used for infections?" -- the condition index maps directly to this subgraph.</p>
+    </div>
+</section>
+
 <!-- EVAL RESULTS -->
 <section id="results">
     <h2 class="section-title">Evaluation <span>Results</span></h2>
@@ -691,6 +762,15 @@
     Built for the <strong>EPAM Mini Datathon</strong> &mdash;
     <a href="https://github.com/H-furkan/FINL" target="_blank">View on GitHub</a>
 </footer>
+
+<script>
+function switchKG(view) {
+    document.querySelectorAll('.kg-view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.kg-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('kg-' + view).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
 
 </body>
 </html>
