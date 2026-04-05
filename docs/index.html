@@ -110,18 +110,16 @@
         .hero p {
             font-size: 1.35rem;
             color: var(--text-muted);
-            max-width: 650px;
+            max-width: 700px;
             margin-bottom: 2.5rem;
         }
         .hero-stats {
             display: flex;
-            gap: 3rem;
+            gap: 4rem;
             flex-wrap: wrap;
             justify-content: center;
         }
-        .hero-stat {
-            text-align: center;
-        }
+        .hero-stat { text-align: center; }
         .hero-stat .num {
             font-size: 3rem;
             font-weight: 800;
@@ -155,101 +153,162 @@
             color: var(--text-muted);
             font-size: 1.2rem;
             margin-bottom: 3rem;
+            max-width: 750px;
         }
 
-        /* --- ARCHITECTURE --- */
-        .arch-flow {
+        /* --- ARCHITECTURE (animated sequential) --- */
+        .arch-pipeline {
             display: flex;
             flex-direction: column;
-            align-items: center;
             gap: 0;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        .arch-node {
+        .arch-step {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.6s ease forwards;
+        }
+        .arch-step:nth-child(1) { animation-delay: 0.1s; }
+        .arch-step:nth-child(2) { animation-delay: 0.3s; }
+        .arch-step:nth-child(3) { animation-delay: 0.5s; }
+        .arch-step:nth-child(4) { animation-delay: 0.7s; }
+        .arch-step:nth-child(5) { animation-delay: 0.9s; }
+        .arch-step:nth-child(6) { animation-delay: 1.1s; }
+        .arch-step:nth-child(7) { animation-delay: 1.3s; }
+        .arch-step:nth-child(8) { animation-delay: 1.5s; }
+        .arch-step:nth-child(9) { animation-delay: 1.7s; }
+        .arch-step:nth-child(10) { animation-delay: 1.9s; }
+        .arch-step:nth-child(11) { animation-delay: 2.1s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .arch-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.2rem 2rem;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-            transition: border-color 0.3s, transform 0.3s;
+            border-radius: 14px;
+            padding: 1.6rem 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.2rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        .arch-node:hover {
+        .arch-card:hover {
             border-color: var(--accent);
-            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
         }
-        .arch-node h3 {
-            font-size: 1.15rem;
-            color: var(--accent);
-            margin-bottom: 0.4rem;
+        .arch-card .step-num {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .arch-node p {
-            font-size: 1rem;
+        .arch-card .step-content { flex: 1; }
+        .arch-card .step-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            color: var(--text);
+        }
+        .arch-card .step-content p {
+            font-size: 1.05rem;
             color: var(--text-muted);
         }
-        .arch-arrow {
-            font-size: 1.5rem;
-            color: var(--accent);
-            padding: 0.3rem 0;
+        .arch-card .step-content .detail {
+            margin-top: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: rgba(37, 99, 235, 0.04);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent);
         }
-        .arch-layers {
+
+        .arch-connector {
+            display: flex;
+            justify-content: center;
+            padding: 0.4rem 0;
+        }
+        .arch-connector .line {
+            width: 2px;
+            height: 28px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        /* Layers sub-grid */
+        .arch-sublayers {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
-            width: 100%;
-            max-width: 700px;
+            margin-top: 0.8rem;
         }
-        .arch-layer {
-            background: var(--bg-card);
+        .arch-sublayer {
+            background: white;
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 1rem;
             text-align: center;
             transition: border-color 0.3s;
         }
-        .arch-layer:hover { border-color: var(--accent2); }
-        .arch-layer .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
-        .arch-layer h4 { font-size: 1.05rem; margin-bottom: 0.3rem; }
-        .arch-layer p { font-size: 0.9rem; color: var(--text-muted); }
+        .arch-sublayer:hover { border-color: var(--accent2); }
+        .arch-sublayer .sl-icon { font-size: 1.6rem; margin-bottom: 0.4rem; }
+        .arch-sublayer h4 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--text); }
+        .arch-sublayer p { font-size: 0.9rem; color: var(--text-muted); }
 
-        /* --- FEATURES --- */
-        .features-grid {
+        /* --- HOW IT WORKS (replaces features) --- */
+        .how-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
         }
-        .feature-card {
+        .how-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.8rem;
+            border-radius: 14px;
+            padding: 2rem;
             transition: border-color 0.3s, transform 0.3s;
         }
-        .feature-card:hover {
+        .how-card:hover {
             border-color: var(--accent);
             transform: translateY(-3px);
         }
-        .feature-card .icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+        .how-card .hw-label {
+            display: inline-block;
+            padding: 0.25rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.8rem;
         }
-        .feature-card .icon.blue { background: rgba(56, 189, 248, 0.15); }
-        .feature-card .icon.purple { background: rgba(129, 140, 248, 0.15); }
-        .feature-card .icon.green { background: rgba(52, 211, 153, 0.15); }
-        .feature-card .icon.orange { background: rgba(251, 146, 60, 0.15); }
-        .feature-card h3 {
-            font-size: 1.25rem;
+        .hw-label.input { background: #dbeafe; color: #1d4ed8; }
+        .hw-label.retrieve { background: #ede9fe; color: #6d28d9; }
+        .hw-label.generate { background: #d1fae5; color: #047857; }
+        .hw-label.fallback { background: #fef3c7; color: #b45309; }
+        .how-card h3 {
+            font-size: 1.2rem;
             margin-bottom: 0.5rem;
         }
-        .feature-card p {
+        .how-card p {
             font-size: 1.05rem;
             color: var(--text-muted);
+        }
+        .how-card code {
+            background: rgba(37, 99, 235, 0.06);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: var(--accent);
         }
 
         /* --- EVAL RESULTS --- */
@@ -279,9 +338,7 @@
         .eval-table tr:hover td {
             background: var(--bg-card-hover);
         }
-        .eval-table .score {
-            font-weight: 700;
-        }
+        .eval-table .score { font-weight: 700; }
         .score.perfect { color: var(--accent3); }
         .score.good { color: var(--accent); }
         .score.mid { color: #d97706; }
@@ -289,55 +346,6 @@
             background: rgba(37, 99, 235, 0.06);
             font-weight: 700;
             font-size: 1.15rem;
-        }
-
-        /* --- COMPARISON --- */
-        .compare-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-        .compare-col {
-            padding: 2rem;
-        }
-        .compare-col.them { background: #fef2f2; }
-        .compare-col.us { background: #f0fdf4; }
-        .compare-col h3 {
-            font-size: 1.25rem;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid var(--border);
-        }
-        .compare-col.them h3 { color: #dc2626; }
-        .compare-col.us h3 { color: var(--accent3); }
-        .compare-col ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-        }
-        .compare-col li {
-            font-size: 1.05rem;
-            color: var(--text-muted);
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        .compare-col.them li::before {
-            content: '✕';
-            position: absolute;
-            left: 0;
-            color: #dc2626;
-            font-weight: 700;
-        }
-        .compare-col.us li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--accent3);
-            font-weight: 700;
         }
 
         /* --- TECH --- */
@@ -374,9 +382,9 @@
 
         /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            .arch-layers { grid-template-columns: 1fr; }
-            .compare-grid { grid-template-columns: 1fr; }
-            .hero-stats { gap: 1.5rem; }
+            .arch-sublayers { grid-template-columns: 1fr; }
+            .how-grid { grid-template-columns: 1fr; }
+            .hero-stats { gap: 2rem; }
             nav .links { gap: 1rem; }
         }
     </style>
@@ -387,9 +395,8 @@
     <div class="logo">Drug Knowledge Assistant</div>
     <div class="links">
         <a href="#architecture">Architecture</a>
-        <a href="#features">Features</a>
+        <a href="#how">How It Works</a>
         <a href="#results">Results</a>
-        <a href="#comparison">vs Others</a>
         <a href="https://github.com/H-furkan/FINL" target="_blank">GitHub</a>
     </div>
 </nav>
@@ -412,94 +419,140 @@
             <div class="num">3</div>
             <div class="label">Retrieval Layers</div>
         </div>
-        <div class="hero-stat">
-            <div class="num">54</div>
-            <div class="label">Tests Passing</div>
-        </div>
     </div>
 </div>
 
 <!-- ARCHITECTURE -->
 <section id="architecture">
     <h2 class="section-title">System <span>Architecture</span></h2>
-    <p class="section-subtitle">Three-layer hybrid retrieval with drug-aware document linking</p>
+    <p class="section-subtitle">Every query flows through a 6-step pipeline. Each step is designed to maximize retrieval precision and answer quality while preventing hallucination.</p>
 
-    <div class="arch-flow">
-        <div class="arch-node">
-            <h3>User Query</h3>
-            <p>"Which drug is used for asthma and what are its side effects?"</p>
-        </div>
-        <div class="arch-arrow">&#8595;</div>
-        <div class="arch-node">
-            <h3>Query Classifier</h3>
-            <p>Routes to: drug_specific | condition_lookup | comparison | multi_hop | safety | general</p>
-        </div>
-        <div class="arch-arrow">&#8595;</div>
-        <div class="arch-layers">
-            <div class="arch-layer">
-                <div class="icon">&#127919;</div>
-                <h4>Layer 1: Drug Match</h4>
-                <p>Regex extraction of drug names. Score: 1.0</p>
-            </div>
-            <div class="arch-layer">
-                <div class="icon">&#128202;</div>
-                <h4>Layer 2: TF-IDF</h4>
-                <p>Cosine similarity on cleaned text. Weight: 0.5</p>
-            </div>
-            <div class="arch-layer">
-                <div class="icon">&#128273;</div>
-                <h4>Layer 3: Keywords</h4>
-                <p>Condition + side-effect reverse index. Score: 0.8</p>
+    <div class="arch-pipeline">
+        <!-- Step 1 -->
+        <div class="arch-step">
+            <div class="arch-card">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h3>User Query</h3>
+                    <p>The user asks a natural language question about drugs, conditions, side effects, or safety.</p>
+                    <div class="detail">Example: "Which drug is used for asthma and what are its side effects?"</div>
+                </div>
             </div>
         </div>
-        <div class="arch-arrow">&#8595;</div>
-        <div class="arch-node">
-            <h3>Sibling Linker</h3>
-            <p>Always pulls both usage + side-effect docs for matched drugs</p>
+
+        <div class="arch-step"><div class="arch-connector"><div class="line"></div></div></div>
+
+        <!-- Step 2 -->
+        <div class="arch-step">
+            <div class="arch-card">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h3>Query Classifier</h3>
+                    <p>Before any retrieval happens, we analyze the query to determine its type. This decides which retrieval strategy and prompt template to use.</p>
+                    <div class="detail">6 types: drug_specific, condition_lookup, comparison, multi_hop, safety, general. Classification uses keyword rules -- no ML overhead, instant routing.</div>
+                </div>
+            </div>
         </div>
-        <div class="arch-arrow">&#8595;</div>
-        <div class="arch-node">
-            <h3>Enriched Context + LLM Generation</h3>
-            <p>Raw docs + structured summaries from drug_knowledge.csv sent to LLM with few-shot prompts. Falls back to structured answers when LLM is unavailable.</p>
+
+        <div class="arch-step"><div class="arch-connector"><div class="line"></div></div></div>
+
+        <!-- Step 3: Three Layers -->
+        <div class="arch-step">
+            <div class="arch-card">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h3>Hybrid 3-Layer Retrieval</h3>
+                    <p>Three independent retrieval methods run in parallel. Each scores documents differently, and their scores are fused into a single ranking. This catches what any single method would miss.</p>
+                    <div class="arch-sublayers">
+                        <div class="arch-sublayer">
+                            <div class="sl-icon">&#127919;</div>
+                            <h4>Drug Match</h4>
+                            <p>Regex extracts drug names directly from the query. If "Drug F" is mentioned, its docs get a score of 1.0. Precise, instant.</p>
+                        </div>
+                        <div class="arch-sublayer">
+                            <div class="sl-icon">&#128202;</div>
+                            <h4>TF-IDF Similarity</h4>
+                            <p>Cosine similarity between the query and all 100 documents. Catches semantic overlap even when no drug name is mentioned.</p>
+                        </div>
+                        <div class="arch-sublayer">
+                            <div class="sl-icon">&#128273;</div>
+                            <h4>Keyword Index</h4>
+                            <p>Matches conditions ("asthma", "diabetes") and side effects ("nausea") against pre-built reverse indexes. Finds drugs by what they treat.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arch-step"><div class="arch-connector"><div class="line"></div></div></div>
+
+        <!-- Step 4 -->
+        <div class="arch-step">
+            <div class="arch-card">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h3>Sibling Document Linker</h3>
+                    <p>Every drug has exactly 2 documents: one for usage and one for side effects. When one is retrieved, its sibling is automatically pulled in. This is why multi-hop queries like "what treats asthma <em>and</em> what are its side effects?" work perfectly -- vanilla TF-IDF misses the second part.</p>
+                    <div class="detail">This exploits a structural pattern in the dataset that other approaches ignore: 50 drugs &times; 2 docs each = 100 documents with a predictable pairing.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arch-step"><div class="arch-connector"><div class="line"></div></div></div>
+
+        <!-- Step 5 -->
+        <div class="arch-step">
+            <div class="arch-card">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h3>Score Drop-off Filter</h3>
+                    <p>After ranking, we detect sharp score drops between consecutive documents. If a document scores less than 40% of its predecessor, it and everything below it are trimmed. This keeps only the truly relevant results and avoids noise.</p>
+                    <div class="detail">Example: scores [1.18, 1.01, 0.21, 0.18] &rarr; only the first 2 are kept. The 80% drop between 1.01 and 0.21 triggers the cutoff.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arch-step"><div class="arch-connector"><div class="line"></div></div></div>
+
+        <!-- Step 6 -->
+        <div class="arch-step">
+            <div class="arch-card">
+                <div class="step-num">6</div>
+                <div class="step-content">
+                    <h3>Enriched Context + Answer Generation</h3>
+                    <p>The retrieved documents are combined with structured summaries from a pre-processed knowledge CSV (drug name, conditions, side effects in clean columns). This enriched context is sent to the LLM with a query-type-specific prompt and few-shot examples.</p>
+                    <div class="detail">If the LLM is unavailable, the system generates a structured answer directly from the CSV -- achieving 74% accuracy with zero API calls. If no document scores above 0.10, the system refuses to answer instead of hallucinating.</div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- FEATURES -->
-<section id="features">
-    <h2 class="section-title">Key <span>Features</span></h2>
-    <p class="section-subtitle">What makes this system stand out</p>
+<!-- HOW IT WORKS (replaces features) -->
+<section id="how">
+    <h2 class="section-title">How It <span>Works</span></h2>
+    <p class="section-subtitle">From question to answer in practice</p>
 
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="icon blue">&#128300;</div>
-            <h3>Drug-Pair Structure Exploitation</h3>
-            <p>We discovered the dataset has 50 drugs with exactly 2 docs each (usage + side effects). Our sibling linker exploits this structure directly, fixing failures that naive TF-IDF misses.</p>
+    <div class="how-grid">
+        <div class="how-card">
+            <div class="hw-label input">Input</div>
+            <h3>Ask Any Drug Question</h3>
+            <p>Type a question in natural language. The system handles side effects, usage, comparisons, safety concerns, and multi-part questions. Case-insensitive -- <code>drug b</code> works the same as <code>Drug B</code>.</p>
         </div>
-        <div class="feature-card">
-            <div class="icon purple">&#129302;</div>
-            <h3>Query-Type-Aware Prompts</h3>
-            <p>6 query types, each with optimized prompt templates and few-shot examples. The classifier routes queries to the right retrieval strategy before touching the LLM.</p>
+        <div class="how-card">
+            <div class="hw-label retrieve">Retrieval</div>
+            <h3>Smart Document Selection</h3>
+            <p>Three retrieval layers score every document independently. Scores are fused, sibling docs are linked, and low-relevance noise is trimmed by the drop-off filter. Only the most relevant documents survive.</p>
         </div>
-        <div class="feature-card">
-            <div class="icon green">&#128737;</div>
-            <h3>Hallucination Prevention</h3>
-            <p>Unanswerable detection via score thresholding. When no document is relevant enough, the system refuses to answer rather than making things up. 100% on unanswerable queries.</p>
+        <div class="how-card">
+            <div class="hw-label generate">Generation</div>
+            <h3>LLM with Guardrails</h3>
+            <p>A query-type-aware prompt with few-shot examples guides the LLM. The model sees enriched context (raw docs + structured CSV summaries) and is instructed to refuse when information is absent. Choose from 3 free models.</p>
         </div>
-        <div class="feature-card">
-            <div class="icon orange">&#9889;</div>
-            <h3>Zero-LLM Fallback</h3>
-            <p>Structured answers from drug_knowledge.csv when the API is down. Achieves 74% accuracy with zero LLM calls -- instant, free, always available.</p>
-        </div>
-        <div class="feature-card">
-            <div class="icon blue">&#128200;</div>
-            <h3>Knowledge Graph Visualization</h3>
-            <p>Interactive networkx graph of all 50 drugs, 41 conditions, and 68 side effects. Drug-focused and condition-cluster views for presentation.</p>
-        </div>
-        <div class="feature-card">
-            <div class="icon purple">&#127912;</div>
-            <h3>Multi-Model Gradio UI</h3>
-            <p>Switch between 3 free LLMs (Qwen, Mistral, LLaMA) or retrieval-only mode from a dropdown. 10 example queries, source citations, query info panel.</p>
+        <div class="how-card">
+            <div class="hw-label fallback">Fallback</div>
+            <h3>Works Without LLM</h3>
+            <p>When the API is down or you select "No LLM" mode, the system generates clean structured answers directly from <code>drug_knowledge.csv</code>. No hallucination possible -- only facts from the dataset. 74% accuracy.</p>
         </div>
     </div>
 </section>
@@ -507,7 +560,7 @@
 <!-- EVAL RESULTS -->
 <section id="results">
     <h2 class="section-title">Evaluation <span>Results</span></h2>
-    <p class="section-subtitle">50 questions across 8 categories, tested end-to-end</p>
+    <p class="section-subtitle">50 questions across 8 categories, tested end-to-end with the full pipeline</p>
 
     <table class="eval-table">
         <thead>
@@ -577,41 +630,6 @@
     </table>
 </section>
 
-<!-- COMPARISON -->
-<section id="comparison">
-    <h2 class="section-title">Our System <span>vs Others</span></h2>
-    <p class="section-subtitle">What typical hackathon teams build vs what we built</p>
-
-    <div class="compare-grid">
-        <div class="compare-col them">
-            <h3>Typical Approach</h3>
-            <ul>
-                <li>Plain TF-IDF retrieval</li>
-                <li>Treat all 100 docs independently</li>
-                <li>One generic prompt for all queries</li>
-                <li>Jupyter notebook demo</li>
-                <li>Manual testing</li>
-                <li>No fallback when API fails</li>
-                <li>Hope the LLM doesn't hallucinate</li>
-                <li>No style control over output</li>
-            </ul>
-        </div>
-        <div class="compare-col us">
-            <h3>Our Approach</h3>
-            <ul>
-                <li>3-layer hybrid retrieval with score fusion</li>
-                <li>Drug-pair structure with sibling linking</li>
-                <li>Query-type-aware dynamic prompts</li>
-                <li>Polished Gradio UI with model selector</li>
-                <li>50-question automated eval with scoring</li>
-                <li>Structured fallback at 74% accuracy</li>
-                <li>Unanswerable detection + threshold gating</li>
-                <li>Few-shot prompting with proper eval split</li>
-            </ul>
-        </div>
-    </div>
-</section>
-
 <!-- TECH STACK -->
 <section>
     <h2 class="section-title" style="text-align:center;">Tech <span>Stack</span></h2>
@@ -626,7 +644,7 @@
         <span class="tech-pill">networkx</span>
         <span class="tech-pill">matplotlib</span>
         <span class="tech-pill">tqdm</span>
-        <span class="tech-pill">pytest (54 tests)</span>
+        <span class="tech-pill">pytest</span>
         <span class="tech-pill">ruff</span>
         <span class="tech-pill">uv</span>
     </div>
