@@ -121,6 +121,20 @@ class TestHybridRetriever:
         assert "Drug G" in texts
         assert "muscle pain" in texts.lower() or "liver" in texts.lower()
 
+    def test_score_dropoff_filters_low_relevance(self):
+        results = self.retriever.retrieve("What are the side effects of Drug A?")
+        scores = results["score"].tolist()
+        # Should keep the high-scoring Drug A docs, drop the low-scoring noise
+        # All kept docs should be reasonably relevant (no huge gap)
+        for i in range(1, len(scores)):
+            if scores[i - 1] > 0:
+                # No kept doc should be below 40% of its predecessor
+                assert scores[i] / scores[i - 1] >= 0.4 or i < 2
+
+    def test_score_dropoff_keeps_minimum(self):
+        results = self.retriever.retrieve("Drug A")
+        assert len(results) >= 2
+
 
 class TestKnowledgeCSVIntegration:
     def setup_method(self):

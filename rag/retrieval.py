@@ -70,6 +70,8 @@ def classify_query(query: str) -> str:
 # ---------------------------------------------------------------------------
 
 UNANSWERABLE_THRESHOLD = 0.10
+SCORE_DROP_RATIO = 0.4  # cut off when next score < 40% of previous score
+MIN_RESULTS = 2  # always keep at least 2 docs
 
 
 class HybridRetriever:
@@ -200,6 +202,15 @@ class HybridRetriever:
 
         top_ids = [doc_id for doc_id, _ in ranked[:top_k]]
         top_scores = [s for _, s in ranked[:top_k]]
+
+        # Score drop-off filter: cut where score drops sharply
+        cut = len(top_scores)
+        for i in range(1, len(top_scores)):
+            if top_scores[i - 1] > 0 and top_scores[i] / top_scores[i - 1] < SCORE_DROP_RATIO:
+                cut = max(i, MIN_RESULTS)
+                break
+        top_ids = top_ids[:cut]
+        top_scores = top_scores[:cut]
 
         results = self.df.iloc[top_ids].copy()
         results["score"] = top_scores
