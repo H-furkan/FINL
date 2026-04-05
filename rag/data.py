@@ -293,3 +293,44 @@ def build_side_effect_index(drug_index: dict) -> dict[str, list[str]]:
         for se in info["side_effects"]:
             se_index.setdefault(se, []).append(drug_name)
     return se_index
+
+
+KG_CSV_PATH = Path(__file__).resolve().parent.parent / "drug_knowledge.csv"
+
+
+def export_knowledge_csv(
+    drug_index: dict, path: Path | str | None = None
+) -> pd.DataFrame:
+    """Export the drug knowledge graph to a structured CSV.
+
+    Columns: drug_name, conditions, side_effects, usage_text, side_effect_text
+    """
+    rows = []
+    for drug_name in sorted(drug_index.keys(), key=_drug_sort_key):
+        info = drug_index[drug_name]
+        rows.append(
+            {
+                "drug_name": drug_name,
+                "conditions": "; ".join(info["conditions"]),
+                "side_effects": "; ".join(info["side_effects"]),
+                "usage_text": info["usage_text"],
+                "side_effect_text": info["side_effect_text"],
+            }
+        )
+
+    df = pd.DataFrame(rows)
+    out = Path(path) if path else KG_CSV_PATH
+    df.to_csv(out, index=False)
+    return df
+
+
+def load_knowledge_csv(path: Path | str | None = None) -> pd.DataFrame:
+    """Load the structured drug knowledge CSV."""
+    path = Path(path) if path else KG_CSV_PATH
+    return pd.read_csv(path)
+
+
+def _drug_sort_key(name: str) -> tuple[int, str]:
+    """Sort drugs: single-letter first (A-Z), then double-letter (AA-AX)."""
+    suffix = name.replace("Drug ", "")
+    return (len(suffix), suffix)

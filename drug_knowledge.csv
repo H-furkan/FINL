@@ -1,0 +1,51 @@
+drug_name,conditions,side_effects,usage_text,side_effect_text
+Drug A,hypertension,dizziness; fatigue; headache,Drug A is commonly used to treat hypertension. It works by relaxing blood vessels and improving blood flow.,Drug A may cause side effects such as dizziness headache and fatigue in some patients.
+Drug B,diabetes,gastrointestinal discomfort; nausea; weight gain,Drug B is prescribed for type 2 diabetes. It helps lower blood sugar levels by increasing insulin sensitivity.,Common side effects of Drug B include nausea weight gain and mild gastrointestinal discomfort.
+Drug C,infections,allergic reactions; itching; rash,Drug C is an antibiotic used to treat bacterial infections such as pneumonia and bronchitis.,Drug C may cause allergic reactions in some patients including rash and itching.
+Drug D,chronic pain,confusion; drowsiness; potential dependency with long-term use,Drug D is used to manage chronic pain. It acts on the central nervous system to reduce pain signals.,Side effects of Drug D include drowsiness confusion and potential dependency with long-term use.
+Drug E,depression,changes in appetite; dry mouth; insomnia,Drug E is used for treating depression. It helps balance neurotransmitters in the brain.,Patients taking Drug E may experience insomnia dry mouth and changes in appetite.
+Drug F,asthma,increased heart rate; nervousness; tremors,Drug F is used to treat asthma. It helps open airways and improve breathing.,Side effects of Drug F may include tremors nervousness and increased heart rate.
+Drug G,cholesterol,liver enzyme changes; muscle pain,Drug G is prescribed for high cholesterol. It reduces LDL cholesterol levels in the blood.,Drug G may cause muscle pain and liver enzyme changes in rare cases.
+Drug H,migraines,dizziness; nausea; sensitivity to light,Drug H is used to treat migraines. It works by narrowing blood vessels in the brain.,Common side effects of Drug H include nausea dizziness and sensitivity to light.
+Drug I,influenza,fatigue; headache; nausea,Drug I is an antiviral medication used to treat influenza. It reduces the severity and duration of symptoms.,Side effects of Drug I include headache nausea and fatigue.
+Drug J,anxiety,dependency risks; dizziness; drowsiness,Drug J is used to treat anxiety disorders. It enhances calming signals in the brain.,Patients using Drug J may experience drowsiness dizziness and dependency risks.
+Drug K,arthritis,risk of bleeding; stomach pain,Drug K is used for treating arthritis by reducing inflammation in joints.,Side effects of Drug K include stomach pain and increased risk of bleeding.
+Drug L,insomnia,impaired concentration; next-day drowsiness,Drug L is used to treat insomnia. It helps patients fall asleep faster.,Drug L may cause next-day drowsiness and impaired concentration.
+Drug M,cancer,fatigue; hair loss; nausea,Drug M is used in cancer therapy to slow the growth of tumor cells.,Side effects of Drug M include fatigue hair loss and nausea.
+Drug N,allergies,drowsiness; dry mouth,Drug N is used to treat allergic conditions such as hay fever.,Drug N may cause drowsiness and dry mouth.
+Drug O,epilepsy,coordination problems; dizziness; fatigue,Drug O is used to treat epilepsy by stabilizing electrical activity in the brain.,Side effects of Drug O include dizziness fatigue and coordination problems.
+Drug P,infections,itching; mild irritation; redness,Drug P is used to treat bacterial skin infections. It works by stopping bacterial growth.,Drug P may cause mild irritation redness and itching at the application site.
+Drug Q,heart failure,dizziness; fatigue; low blood pressure,Drug Q is prescribed for treating heart failure. It improves heart function and blood circulation.,Side effects of Drug Q include dizziness low blood pressure and fatigue.
+Drug R,thyroid disorders,headache; mood swings; weight changes,Drug R is used to manage thyroid disorders. It helps regulate hormone levels.,Drug R may cause weight changes mood swings and headaches.
+Drug S,osteoporosis,joint pain; muscle cramps; nausea,Drug S is used for treating osteoporosis. It strengthens bones and reduces fracture risk.,Side effects of Drug S include joint pain nausea and muscle cramps.
+Drug T,acid reflux,abdominal discomfort; diarrhea; headache,Drug T is prescribed to treat acid reflux. It reduces stomach acid production.,Drug T may cause headache diarrhea and abdominal discomfort.
+Drug U,infections,headache; nausea; skin rash,Drug U is used to treat fungal infections. It disrupts fungal cell membranes.,Side effects of Drug U include nausea headache and skin rash.
+Drug V,hypertension,dizziness; dry cough; fatigue,Drug V is used for managing high blood pressure. It relaxes blood vessels.,Drug V may cause dizziness fatigue and dry cough.
+Drug W,adhd,decreased appetite; insomnia; nervousness,Drug W is prescribed for treating ADHD. It improves focus and attention.,Side effects of Drug W include insomnia decreased appetite and nervousness.
+Drug X,kidney disease,electrolyte imbalance; fatigue; swelling,Drug X is used to treat chronic kidney disease complications.,Drug X may cause fatigue swelling and electrolyte imbalance.
+Drug Y,parkinson disease,dizziness; hallucinations; nausea,Drug Y is used to treat Parkinson disease. It helps improve motor control.,Side effects of Drug Y include nausea dizziness and hallucinations.
+Drug Z,glaucoma,blurred vision; dryness; eye irritation,Drug Z is used for treating glaucoma by reducing eye pressure.,Drug Z may cause blurred vision eye irritation and dryness.
+Drug AA,anemia,headache; nausea,Drug AA is used to treat anemia by increasing red blood cell production.,Side effects of Drug AA include headache nausea and high blood pressure.
+Drug AB,autoimmune diseases,fatigue; infections; liver toxicity,Drug AB is prescribed for treating autoimmune diseases by suppressing immune response.,Drug AB may cause infections fatigue and liver toxicity.
+Drug AC,acne,dry skin; irritation; sensitivity to sunlight,Drug AC is used to treat severe acne. It reduces oil production in the skin.,Side effects of Drug AC include dry skin irritation and sensitivity to sunlight.
+Drug AD,obesity,anxiety; increased heart rate; insomnia,Drug AD is used to treat obesity. It reduces appetite and increases metabolism.,Drug AD may cause insomnia increased heart rate and anxiety.
+Drug AE,bipolar disorder,fatigue; tremors; weight gain,Drug AE is used to treat bipolar disorder by stabilizing mood.,Side effects of Drug AE include weight gain tremors and fatigue.
+Drug AF,gout,joint pain; nausea; rash,Drug AF is prescribed for treating gout by reducing uric acid levels.,Drug AF may cause nausea rash and joint pain.
+Drug AG,copd,cough; dizziness; throat irritation,Drug AG is used to treat chronic obstructive pulmonary disease. It improves airflow.,Side effects of Drug AG include cough throat irritation and dizziness.
+Drug AH,infections,burning sensation; redness,Drug AH is used to treat bacterial eye infections.,Drug AH may cause temporary burning sensation and redness.
+Drug AI,infections,fatigue; headache; nausea,Drug AI is used for treating viral infections. It inhibits viral replication.,Side effects of Drug AI include fatigue headache and nausea.
+Drug AJ,hormonal imbalances,fatigue; mood changes; weight gain,Drug AJ is used to treat hormonal imbalances.,Drug AJ may cause mood changes weight gain and fatigue.
+Drug AK,ulcers,constipation; headache; nausea,Drug AK is used for treating ulcers. It protects the stomach lining.,Side effects of Drug AK include constipation nausea and headache.
+Drug AL,chronic fatigue syndrome,dizziness; nausea; sleep disturbances,Drug AL is prescribed for treating chronic fatigue syndrome.,Drug AL may cause dizziness nausea and sleep disturbances.
+Drug AM,multiple sclerosis,dizziness; fatigue; muscle weakness,Drug AM is used to treat multiple sclerosis by reducing nerve damage.,Side effects of Drug AM include fatigue muscle weakness and dizziness.
+Drug AN,blood clotting disorders,bleeding; bruising; fatigue,Drug AN is used to treat blood clotting disorders.,Drug AN may cause bleeding bruising and fatigue.
+Drug AO,liver diseases,abdominal pain; fatigue; nausea,Drug AO is used to treat liver diseases by improving liver function.,Side effects of Drug AO include nausea fatigue and abdominal pain.
+Drug AP,migraines,dizziness; nausea; sensitivity to light,Drug AP is prescribed for treating migraines and severe headaches.,Drug AP may cause dizziness nausea and sensitivity to light.
+Drug AQ,infections,cough; fatigue; fever,Drug AQ is used to treat respiratory infections.,Drug AQ may cause cough fever and fatigue.
+Drug AR,skin inflammation,dryness; itching; redness,Drug AR is used for treating skin inflammation conditions.,Side effects of Drug AR include redness itching and dryness.
+Drug AS,metabolic disorders,fatigue; nausea; weight changes,Drug AS is used to treat metabolic disorders.,Drug AS may cause fatigue nausea and weight changes.
+Drug AT,anxiety,confusion; dizziness; drowsiness,Drug AT is used for treating anxiety and panic attacks.,Drug AT may cause drowsiness dizziness and confusion.
+Drug AU,infections,fatigue; headache; nasal irritation,Drug AU is prescribed for treating chronic sinus infections.,Drug AU may cause headache nasal irritation and fatigue.
+Drug AV,cardiovascular diseases,chest discomfort; dizziness; fatigue,Drug AV is used to treat cardiovascular diseases.,Drug AV may cause chest discomfort dizziness and fatigue.
+Drug AW,digestive disorders,abdominal pain; bloating; nausea,Drug AW is used to treat digestive disorders.,Drug AW may cause nausea bloating and abdominal pain.
+Drug AX,immune deficiencies,fatigue; infections; weakness,Drug AX is used for treating immune system deficiencies.,Drug AX may cause fatigue infections and weakness.
