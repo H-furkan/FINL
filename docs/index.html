@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Knowledge Assistant | RAG System</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --accent: #38bdf8;
+            --accent2: #818cf8;
+            --accent3: #34d399;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --gradient: linear-gradient(135deg, #38bdf8, #818cf8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* --- NAV --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav .logo {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        nav .links { display: flex; gap: 2rem; }
+        nav .links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        nav .links a:hover { color: var(--accent); }
+
+        /* --- HERO --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(56, 189, 248, 0.08), transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(129, 140, 248, 0.06), transparent 50%);
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .hero > * { position: relative; z-index: 1; }
+        .hero .badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            border: 1px solid var(--accent);
+            border-radius: 50px;
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .hero-stat {
+            text-align: center;
+        }
+        .hero-stat .num {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-stat .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* --- SECTIONS --- */
+        section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .section-title span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* --- ARCHITECTURE --- */
+        .arch-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        .arch-node {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem 2rem;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .arch-node:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .arch-node h3 {
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 0.4rem;
+        }
+        .arch-node p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .arch-arrow {
+            font-size: 1.5rem;
+            color: var(--accent);
+            padding: 0.3rem 0;
+        }
+        .arch-layers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            width: 100%;
+            max-width: 700px;
+        }
+        .arch-layer {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        .arch-layer:hover { border-color: var(--accent2); }
+        .arch-layer .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .arch-layer h4 { font-size: 0.9rem; margin-bottom: 0.3rem; }
+        .arch-layer p { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* --- FEATURES --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.8rem;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .feature-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        .feature-card .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card .icon.blue { background: rgba(56, 189, 248, 0.15); }
+        .feature-card .icon.purple { background: rgba(129, 140, 248, 0.15); }
+        .feature-card .icon.green { background: rgba(52, 211, 153, 0.15); }
+        .feature-card .icon.orange { background: rgba(251, 146, 60, 0.15); }
+        .feature-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* --- EVAL RESULTS --- */
+        .eval-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .eval-table th {
+            background: rgba(56, 189, 248, 0.1);
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        .eval-table td {
+            padding: 0.9rem 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+        .eval-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+        .eval-table .score {
+            font-weight: 700;
+        }
+        .score.perfect { color: var(--accent3); }
+        .score.good { color: var(--accent); }
+        .score.mid { color: #fbbf24; }
+        .eval-table .overall td {
+            background: rgba(56, 189, 248, 0.08);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        /* --- COMPARISON --- */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .compare-col {
+            padding: 2rem;
+        }
+        .compare-col.them { background: rgba(248, 113, 113, 0.05); }
+        .compare-col.us { background: rgba(52, 211, 153, 0.05); }
+        .compare-col h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .compare-col.them h3 { color: #f87171; }
+        .compare-col.us h3 { color: var(--accent3); }
+        .compare-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+        .compare-col li {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .compare-col.them li::before {
+            content: '✕';
+            position: absolute;
+            left: 0;
+            color: #f87171;
+            font-weight: 700;
+        }
+        .compare-col.us li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent3);
+            font-weight: 700;
+        }
+
+        /* --- TECH --- */
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+        .tech-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.6rem 1.4rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .tech-pill:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .arch-layers { grid-template-columns: 1fr; }
+            .compare-grid { grid-template-columns: 1fr; }
+            .hero-stats { gap: 1.5rem; }
+            nav .links { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">Drug Knowledge Assistant</div>
+    <div class="links">
+        <a href="#architecture">Architecture</a>
+        <a href="#features">Features</a>
+        <a href="#results">Results</a>
+        <a href="#comparison">vs Others</a>
+        <a href="https://github.com/H-furkan/FINL" target="_blank">GitHub</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="badge">EPAM Mini Datathon</div>
+    <h1>Drug Knowledge <span>Assistant</span></h1>
+    <p>A hybrid RAG system that answers drug-related questions with 90% accuracy across 50 evaluation queries -- with a structured fallback that works without any LLM.</p>
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="num">90%</div>
+            <div class="label">Eval Accuracy</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num">50</div>
+            <div class="label">Drugs Indexed</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num">3</div>
+            <div class="label">Retrieval Layers</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num">54</div>
+            <div class="label">Tests Passing</div>
+        </div>
+    </div>
+</div>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+    <h2 class="section-title">System <span>Architecture</span></h2>
+    <p class="section-subtitle">Three-layer hybrid retrieval with drug-aware document linking</p>
+
+    <div class="arch-flow">
+        <div class="arch-node">
+            <h3>User Query</h3>
+            <p>"Which drug is used for asthma and what are its side effects?"</p>
+        </div>
+        <div class="arch-arrow">&#8595;</div>
+        <div class="arch-node">
+            <h3>Query Classifier</h3>
+            <p>Routes to: drug_specific | condition_lookup | comparison | multi_hop | safety | general</p>
+        </div>
+        <div class="arch-arrow">&#8595;</div>
+        <div class="arch-layers">
+            <div class="arch-layer">
+                <div class="icon">&#127919;</div>
+                <h4>Layer 1: Drug Match</h4>
+                <p>Regex extraction of drug names. Score: 1.0</p>
+            </div>
+            <div class="arch-layer">
+                <div class="icon">&#128202;</div>
+                <h4>Layer 2: TF-IDF</h4>
+                <p>Cosine similarity on cleaned text. Weight: 0.5</p>
+            </div>
+            <div class="arch-layer">
+                <div class="icon">&#128273;</div>
+                <h4>Layer 3: Keywords</h4>
+                <p>Condition + side-effect reverse index. Score: 0.8</p>
+            </div>
+        </div>
+        <div class="arch-arrow">&#8595;</div>
+        <div class="arch-node">
+            <h3>Sibling Linker</h3>
+            <p>Always pulls both usage + side-effect docs for matched drugs</p>
+        </div>
+        <div class="arch-arrow">&#8595;</div>
+        <div class="arch-node">
+            <h3>Enriched Context + LLM Generation</h3>
+            <p>Raw docs + structured summaries from drug_knowledge.csv sent to LLM with few-shot prompts. Falls back to structured answers when LLM is unavailable.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+    <h2 class="section-title">Key <span>Features</span></h2>
+    <p class="section-subtitle">What makes this system stand out</p>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="icon blue">&#128300;</div>
+            <h3>Drug-Pair Structure Exploitation</h3>
+            <p>We discovered the dataset has 50 drugs with exactly 2 docs each (usage + side effects). Our sibling linker exploits this structure directly, fixing failures that naive TF-IDF misses.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon purple">&#129302;</div>
+            <h3>Query-Type-Aware Prompts</h3>
+            <p>6 query types, each with optimized prompt templates and few-shot examples. The classifier routes queries to the right retrieval strategy before touching the LLM.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon green">&#128737;</div>
+            <h3>Hallucination Prevention</h3>
+            <p>Unanswerable detection via score thresholding. When no document is relevant enough, the system refuses to answer rather than making things up. 100% on unanswerable queries.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon orange">&#9889;</div>
+            <h3>Zero-LLM Fallback</h3>
+            <p>Structured answers from drug_knowledge.csv when the API is down. Achieves 74% accuracy with zero LLM calls -- instant, free, always available.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon blue">&#128200;</div>
+            <h3>Knowledge Graph Visualization</h3>
+            <p>Interactive networkx graph of all 50 drugs, 41 conditions, and 68 side effects. Drug-focused and condition-cluster views for presentation.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon purple">&#127912;</div>
+            <h3>Multi-Model Gradio UI</h3>
+            <p>Switch between 3 free LLMs (Qwen, Mistral, LLaMA) or retrieval-only mode from a dropdown. 10 example queries, source citations, query info panel.</p>
+        </div>
+    </div>
+</section>
+
+<!-- EVAL RESULTS -->
+<section id="results">
+    <h2 class="section-title">Evaluation <span>Results</span></h2>
+    <p class="section-subtitle">50 questions across 8 categories, tested end-to-end</p>
+
+    <table class="eval-table">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Questions</th>
+                <th>Avg Score</th>
+                <th>Passed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Direct Fact Retrieval</td>
+                <td>7</td>
+                <td class="score perfect">100%</td>
+                <td>7/7</td>
+            </tr>
+            <tr>
+                <td>Usage-Based</td>
+                <td>7</td>
+                <td class="score perfect">100%</td>
+                <td>7/7</td>
+            </tr>
+            <tr>
+                <td>Reverse Lookup</td>
+                <td>6</td>
+                <td class="score perfect">100%</td>
+                <td>6/6</td>
+            </tr>
+            <tr>
+                <td>Complex / Combined</td>
+                <td>7</td>
+                <td class="score perfect">100%</td>
+                <td>7/7</td>
+            </tr>
+            <tr>
+                <td>Unanswerable</td>
+                <td>5</td>
+                <td class="score perfect">100%</td>
+                <td>5/5</td>
+            </tr>
+            <tr>
+                <td>Multi-Hop Reasoning</td>
+                <td>4</td>
+                <td class="score perfect">100%</td>
+                <td>4/4</td>
+            </tr>
+            <tr>
+                <td>Safety / Risk</td>
+                <td>7</td>
+                <td class="score good">71%</td>
+                <td>6/7</td>
+            </tr>
+            <tr>
+                <td>Comparison / Multi-Drug</td>
+                <td>7</td>
+                <td class="score mid">61%</td>
+                <td>5/7</td>
+            </tr>
+            <tr class="overall">
+                <td>Overall</td>
+                <td>50</td>
+                <td class="score perfect">90%</td>
+                <td>47/50</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- COMPARISON -->
+<section id="comparison">
+    <h2 class="section-title">Our System <span>vs Others</span></h2>
+    <p class="section-subtitle">What typical hackathon teams build vs what we built</p>
+
+    <div class="compare-grid">
+        <div class="compare-col them">
+            <h3>Typical Approach</h3>
+            <ul>
+                <li>Plain TF-IDF retrieval</li>
+                <li>Treat all 100 docs independently</li>
+                <li>One generic prompt for all queries</li>
+                <li>Jupyter notebook demo</li>
+                <li>Manual testing</li>
+                <li>No fallback when API fails</li>
+                <li>Hope the LLM doesn't hallucinate</li>
+                <li>No style control over output</li>
+            </ul>
+        </div>
+        <div class="compare-col us">
+            <h3>Our Approach</h3>
+            <ul>
+                <li>3-layer hybrid retrieval with score fusion</li>
+                <li>Drug-pair structure with sibling linking</li>
+                <li>Query-type-aware dynamic prompts</li>
+                <li>Polished Gradio UI with model selector</li>
+                <li>50-question automated eval with scoring</li>
+                <li>Structured fallback at 74% accuracy</li>
+                <li>Unanswerable detection + threshold gating</li>
+                <li>Few-shot prompting with proper eval split</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- TECH STACK -->
+<section>
+    <h2 class="section-title" style="text-align:center;">Tech <span>Stack</span></h2>
+    <p class="section-subtitle" style="text-align:center;">No GPU. No heavy infra. Pure engineering.</p>
+    <div class="tech-pills">
+        <span class="tech-pill">Python 3.10+</span>
+        <span class="tech-pill">pandas</span>
+        <span class="tech-pill">scikit-learn</span>
+        <span class="tech-pill">OpenAI SDK</span>
+        <span class="tech-pill">OpenRouter (Free)</span>
+        <span class="tech-pill">Gradio</span>
+        <span class="tech-pill">networkx</span>
+        <span class="tech-pill">matplotlib</span>
+        <span class="tech-pill">tqdm</span>
+        <span class="tech-pill">pytest (54 tests)</span>
+        <span class="tech-pill">ruff</span>
+        <span class="tech-pill">uv</span>
+    </div>
+</section>
+
+<footer>
+    Built for the <strong>EPAM Mini Datathon</strong> &mdash;
+    <a href="https://github.com/H-furkan/FINL" target="_blank">View on GitHub</a>
+</footer>
+
+</body>
+</html>
