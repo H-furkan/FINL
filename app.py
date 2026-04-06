@@ -2,16 +2,21 @@
 
 from __future__ import annotations
 
+import itertools
 import os
 
 import gradio as gr
 
 from rag.generation import RAGPipeline
 
-API_KEY = os.environ.get(
-    "OPENROUTER_API_KEY",
+API_KEYS = [
     "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",
-)
+    "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",
+    "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",
+    "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",
+    "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",
+]
+_key_cycle = itertools.cycle(API_KEYS)
 
 DEFAULT_MODELS = (
     "qwen/qwen3.6-plus:free",
@@ -20,17 +25,11 @@ DEFAULT_MODELS = (
 )
 NO_LLM = "No LLM (Retrieval Only)"
 
-# Pre-build pipelines to avoid re-initializing retriever each time
-_pipelines: dict[str, RAGPipeline] = {}
-
 
 def _get_pipeline(model_choice: str) -> RAGPipeline:
-    if model_choice not in _pipelines:
-        if model_choice == NO_LLM:
-            _pipelines[model_choice] = RAGPipeline(api_key="")
-        else:
-            _pipelines[model_choice] = RAGPipeline(api_key=API_KEY, model=model_choice)
-    return _pipelines[model_choice]
+    if model_choice == NO_LLM:
+        return RAGPipeline(api_key="")
+    return RAGPipeline(api_key=next(_key_cycle), model=model_choice)
 
 
 def ask(query: str, model_choice: str) -> tuple[str, str, str]:
