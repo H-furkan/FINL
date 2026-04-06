@@ -9,10 +9,7 @@ from tqdm import tqdm
 
 from rag.retrieval import HybridRetriever, classify_query
 
-API_KEY = os.environ.get(
-    "OPENROUTER_API_KEY",
-    "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",
-)
+API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 MODEL_NAME = "qwen/qwen3.6-plus:free"
 
 retriever = HybridRetriever()

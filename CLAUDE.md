@@ -1,30 +1,14 @@
 # CLAUDE.md -- AI Agent Instructions for Drug Knowledge Assistant
 
 ## Project Overview
-RAG system for EPAM datathon. 50 drugs, 100 docs, 3-hour build.
-See `ROADMAP.md` for full strategy and `memory-bank/` for persistent context.
-
-## AI Tool Usage
-
-### jCodeMunch MCP (Token-Efficient Code Retrieval)
-Use jcodemunch-mcp for code lookup whenever available. Prefer symbol search,
-outlines, and targeted retrieval over reading full files. This saves ~95% tokens
-on code exploration tasks.
-
-Install: `pip install jcodemunch-mcp`
-Init: `jcodemunch-mcp init`
-
-### Cursor Memory Bank (Cross-Session Continuity)
-Before starting work, ALWAYS read `memory-bank/activeContext.md` and
-`memory-bank/progress.md` to understand current state. After completing
-any significant work, update these files.
+RAG system for drug-related Q&A. 50 drugs, 100 docs, hybrid 3-layer retrieval.
+Live demo hosted on HuggingFace Spaces. GitHub Pages site in `docs/`.
 
 ## Code Conventions
 - Python 3.10+, managed via uv
 - Formatting: ruff (line-length 88, double quotes)
 - Linting: ruff check (E, W, F, I, UP, B rules)
 - Testing: pytest (tests/ directory)
-- Pre-commit: prek (ruff format + ruff check + pytest)
 - API keys go in environment variables, NEVER hardcoded
 - All retrieval functions should return a DataFrame with a `score` column
 - Fallback answers must work without LLM
@@ -32,15 +16,25 @@ any significant work, update these files.
 ## Dev Commands
 ```bash
 uv sync                  # install dependencies
-uv run python run_pipeline.py  # run the pipeline
 uv run pytest            # run tests
 uv run ruff format .     # format code
 uv run ruff check --fix  # lint + autofix
 ```
 
-## Key Architecture Decisions
-- Hybrid 3-layer retrieval (drug match + TF-IDF + condition match)
-- Few-shot prompting (NOT DPO -- we use API models)
+## Key Architecture
+- Hybrid 3-layer retrieval (drug match + TF-IDF + keyword match)
 - Drug-pair sibling linking (always pull both docs for a drug)
-- Query classification before retrieval
-- Unanswerable detection via score threshold
+- Query classification before retrieval (6 types)
+- Few-shot prompting with query-type-aware templates
+- Unanswerable detection via score threshold (0.10)
+- Structured fallback from drug_knowledge.csv (works without LLM)
+
+## Deployment
+- **Gradio app**: `app.py` (deployed to HF Spaces, not in GitHub deps)
+- **HF Space**: https://huggingface.co/spaces/Fo-zh/drug-knowledge-assistant
+- **API keys**: stored as HF Space secrets (`OPENROUTER_API_KEYS`), never in code
+- **GitHub Pages**: `docs/index.html`
+
+## Cross-Session Context
+- `memory-bank/` contains Cursor memory bank files for AI continuity
+- Read `memory-bank/activeContext.md` and `memory-bank/progress.md` for current state
