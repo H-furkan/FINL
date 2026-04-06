@@ -18,6 +18,7 @@ _key_cycle = itertools.cycle(API_KEYS)
 
 DEFAULT_MODELS = (
     "google/gemma-3-12b-it:free",
+    "qwen/qwen3.6-plus:free",
     "nvidia/nemotron-3-super-120b-a12b:free",
     "openai/gpt-oss-120b:free",
 )
