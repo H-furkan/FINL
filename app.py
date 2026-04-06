@@ -10,7 +10,7 @@ from rag.generation import RAGPipeline
 
 API_KEY = os.environ.get(
     "OPENROUTER_API_KEY",
-    "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",
+    "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",
 )
 
 DEFAULT_MODELS = (
