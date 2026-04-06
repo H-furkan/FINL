@@ -15,8 +15,8 @@ API_KEY = os.environ.get(
 
 DEFAULT_MODELS = (
     "qwen/qwen3.6-plus:free",
-    "mistralai/mistral-7b-instruct:free",
-    "meta-llama/llama-3.1-8b-instruct:free",
+    "meta-llama/llama-3.3-70b-instruct:free",
+    "google/gemma-3-27b-it:free",
 )
 NO_LLM = "No LLM (Retrieval Only)"
 
