@@ -10,11 +10,11 @@ import gradio as gr
 from rag.generation import RAGPipeline
 
 API_KEYS = [
-    "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",
-    "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",
-    "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",
-    "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",
-    "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",
+    "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",
+    "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",
+    "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",
+    "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",
+    "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",
 ]
 _key_cycle = itertools.cycle(API_KEYS)
 
@@ -26,19 +26,25 @@ DEFAULT_MODELS = (
 NO_LLM = "No LLM (Retrieval Only)"
 
 
-def _get_pipeline(model_choice: str) -> RAGPipeline:
-    if model_choice == NO_LLM:
-        return RAGPipeline(api_key="")
-    return RAGPipeline(api_key=next(_key_cycle), model=model_choice)
-
-
 def ask(query: str, model_choice: str) -> tuple[str, str, str]:
     """Process a query and return (answer, sources, metadata)."""
     if not query.strip():
         return "Please enter a question.", "", ""
 
-    pipeline = _get_pipeline(model_choice)
-    result = pipeline.answer(query)
+    if model_choice == NO_LLM:
+        pipeline = RAGPipeline(api_key="")
+        result = pipeline.answer(query)
+    else:
+        result = None
+        for _ in range(len(API_KEYS)):
+            key = next(_key_cycle)
+            pipeline = RAGPipeline(api_key=key, model=model_choice)
+            result = pipeline.answer(query)
+            if result["mode"] != "fallback":
+                break
+        if result is None:
+            pipeline = RAGPipeline(api_key="")
+            result = pipeline.answer(query)
 
     mode_label = {
         "llm": f"LLM ({model_choice})",
