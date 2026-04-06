@@ -1,29 +1,25 @@
 # Product Context
 
-## Problem Statement
-A pharmaceutical company has drug information scattered across documents.
-Users cannot easily search or extract insights. We build an AI system to
-answer natural language questions using this data.
+## What This Is
+A Drug Knowledge Assistant — a hybrid RAG system that answers drug-related questions using a dataset of 100 documents covering 50 drugs. Built for the EPAM Mini Datathon, now publicly released.
 
-## Target Users
-- Datathon judges evaluating our system
-- Simulated end-users: healthcare professionals seeking drug information
+## Live Deployment
+- **Demo**: https://huggingface.co/spaces/Fo-zh/drug-knowledge-assistant
+- **Website**: https://h-furkan.github.io/FINL/
+- **GitHub**: https://github.com/H-furkan/FINL
 
-## User Experience Goals
-1. Ask a question in plain English, get a structured answer
-2. See which source documents the answer came from (transparency)
-3. System gracefully handles unanswerable questions (no hallucination)
-4. Works even if the LLM API is down (fallback mode)
+## What Makes It Different
+1. **Drug-pair structure exploitation** — every drug has exactly 2 docs (usage + side effects); sibling linking ensures both are always retrieved together
+2. **3-layer hybrid retrieval** with score fusion (not just TF-IDF)
+3. **Query classification** routes to optimal retrieval strategy and prompt template
+4. **Hallucination prevention** via score threshold gating
+5. **Works without LLM** — structured fallback achieves 74% accuracy from CSV alone
+6. **API key rotation** — cycles through multiple OpenRouter keys to handle free tier rate limits
 
-## Competitive Differentiators (vs other hackathon teams)
-- Drug-pair structure exploitation (not generic TF-IDF)
-- 3-layer hybrid retrieval with score fusion
-- Query classification routing
-- Few-shot prompted LLM with train/eval split
-- Polished Gradio UI with example buttons
-- Automated evaluation with scoring table
-- Hallucination prevention via threshold gating
+## Performance
+- 90% accuracy on 50-question eval (47/50 passed)
+- 100% on 6 of 8 categories
+- Weakest areas: comparison (61%) and safety (71%) queries
 
-## Presentation Angle
-"We discovered the dataset's internal structure and built a system that
-exploits it, rather than treating it as a bag of documents."
+## Future Direction
+The current dataset uses synthetic "Drug A" through "Drug AX". The next step is replacing this with real medicine data (FDA OpenFDA API, DrugBank) to make the system practically useful.

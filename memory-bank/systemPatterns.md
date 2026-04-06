@@ -18,6 +18,9 @@ User Query
 [Sibling Doc Linker] --> Always pull both usage + side_effect docs (score=0.3)
     |
     v
+[Score Drop-off Filter] --> Cut when next score < 40% of previous
+    |
+    v
 [Enriched Context Builder] --> Raw docs + structured summaries from drug_knowledge.csv
     |
     v
@@ -33,27 +36,20 @@ User Query
 ## Project Structure
 ```
 rag/
-    __init__.py
-    data.py                  # Drug knowledge graph + indexes (Phase 1)
-    retrieval.py             # HybridRetriever + classify_query (Phase 2-3)
-    generation.py            # RAGPipeline: LLM + fallback (Phase 4)
-tests/
-    __init__.py
-    test_retrieval.py        # Basic retrieval tests (3)
-    test_data.py             # Data/index tests (19)
-    test_retrieval_hybrid.py # Hybrid retriever + KG CSV tests (24)
-    test_generation.py       # RAGPipeline tests (8)
-run_pipeline.py              # Interactive pipeline script
-eval_pipeline.py             # 50-question eval with tqdm + category scoring
-eval_questions.md            # 50 questions across 8 categories
+    data.py                  # Drug knowledge graph + indexes
+    retrieval.py             # HybridRetriever + classify_query
+    generation.py            # RAGPipeline: LLM + fallback
+tests/                       # 54 tests across 4 files
+app.py                       # Gradio UI (deployed to HF Spaces)
+eval_pipeline.py             # 50-question eval suite
+benchmark_prompts.py         # Prompt strategy comparison
+eval_questions.md            # 50 eval questions with expected answers
 drug_docs.csv                # Source dataset (100 docs, 50 drugs)
-drug_knowledge.csv           # Structured CSV (50 drugs, pre-parsed)
+drug_knowledge.csv           # Structured knowledge CSV (50 drugs)
 visualize_kg.py              # Knowledge graph visualization
-kg_full.png                  # Rendered full knowledge graph
-pyproject.toml               # uv project config
-CLAUDE.md                    # AI agent instructions
-ROADMAP.md                   # Hackathon strategy
-memory-bank/                 # Persistent AI context
+generate_web_graphs.py       # Web-optimized graph images
+docs/                        # GitHub Pages site
+memory-bank/                 # AI context persistence
 ```
 
 ## Key Design Decisions
@@ -62,39 +58,16 @@ memory-bank/                 # Persistent AI context
 The dataset has 50 drugs x 2 docs each. We build a structured index at startup
 and use drug_knowledge.csv for enriched context and fallback answers.
 
-### Few-Shot over DPO
-3 gold Q&A pairs as few-shot examples in prompts. Remaining questions held out
-for evaluation. DPO impossible with API models.
+### API Key Rotation
+Multiple OpenRouter API keys stored as HF Space secrets. Each request cycles
+to the next key. If rate-limited, retries with remaining keys before falling back.
 
-### Query Classification Before Retrieval
-Simple keyword rules route queries to optimal retrieval + prompt strategy.
+### Few-Shot over DPO
+3 gold Q&A pairs as few-shot examples in prompts. DPO impossible with API models.
 
 ### Unanswerable Detection
-If no document scores above 0.10, the system refuses to answer.
-
-### Enriched Context
-LLM receives both raw retrieved docs AND structured summaries from drug_knowledge.csv,
-giving it cleaner deduplicated facts to work with.
+If no document scores above 0.10, the system refuses to answer rather than hallucinate.
 
 ### Structured Fallback
 When LLM is unavailable, build_fallback_answer generates formatted answers from
 drug_knowledge.csv columns. Achieves 74% without any LLM calls.
-
-## Data Structures (rag/data.py)
-
-### drug_index
-```python
-{"Drug A": {"usage_docs": [0], "side_effect_docs": [1], "all_docs": [0, 1],
-            "conditions": ["hypertension"], "side_effects": ["dizziness", "headache", "fatigue"],
-            "usage_text": "...", "side_effect_text": "..."}}
-```
-
-### condition_index
-```python
-{"hypertension": ["Drug A", "Drug V"], "diabetes": ["Drug B"]}
-```
-
-### side_effect_index
-```python
-{"dizziness": ["Drug A", "Drug H", "Drug V", ...], "dependency risks": ["Drug D", "Drug J"]}
-```
