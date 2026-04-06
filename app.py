@@ -10,11 +10,9 @@ import gradio as gr
 from rag.generation import RAGPipeline
 
 API_KEYS = [
-    "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",
-    "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",
-    "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",
-    "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",
-    "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",
+    k.strip()
+    for k in os.environ.get("OPENROUTER_API_KEYS", "").split(",")
+    if k.strip()
 ]
 _key_cycle = itertools.cycle(API_KEYS)
 
