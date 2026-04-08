@@ -9,18 +9,19 @@ import gradio as gr
 
 from rag.generation import RAGPipeline
 
+_raw_api_keys = os.environ.get("OPENROUTER_API_KEYS", "").split(",")
+_single_api_key = os.environ.get("OPENROUTER_API_KEY", "")
 API_KEYS = [
     k.strip()
-    for k in os.environ.get("OPENROUTER_API_KEYS", "").split(",")
+    for k in [*_raw_api_keys, _single_api_key]
     if k.strip()
 ]
 _key_cycle = itertools.cycle(API_KEYS)
 
 DEFAULT_MODELS = (
-    "google/gemma-3-12b-it:free",
-    "qwen/qwen3.6-plus:free",
     "nvidia/nemotron-3-super-120b-a12b:free",
     "openai/gpt-oss-120b:free",
+    "google/gemma-3-12b-it:free",
 )
 NO_LLM = "No LLM (Retrieval Only)"
 
